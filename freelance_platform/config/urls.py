@@ -31,6 +31,12 @@ urlpatterns = [
     path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
+    # Social authentication URLs
+    path('api/social/', include('apps.social_accounts.urls')),
+
+    # Django allauth URLs
+    path('accounts/', include('allauth.urls')),
+
     # App URLs
     path('api/accounts/', include('apps.accounts.urls')),
     path('api/gigs/', include('apps.gigs.urls')),

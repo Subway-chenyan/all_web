@@ -41,6 +41,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 
     # Local apps
     'apps.accounts',
@@ -50,6 +54,7 @@ INSTALLED_APPS = [
     'apps.messaging',
     'apps.reviews',
     'apps.common',
+    'apps.social_accounts',
 ]
 
 MIDDLEWARE = [
@@ -59,6 +64,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -105,6 +111,12 @@ else:
             'PORT': config('DB_PORT'),
         }
     }
+
+# Authentication Backends
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -243,3 +255,91 @@ LOGGING = {
 
 # Create logs directory if it doesn't exist
 os.makedirs(BASE_DIR / 'logs', exist_ok=True)
+
+# Django Allauth Configuration
+SITE_ID = 1
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300
+ACCOUNT_SESSION_REMEMBER = True
+
+# Email confirmation settings
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 7
+ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
+
+# Password settings
+ACCOUNT_PASSWORD_MIN_LENGTH = 8
+ACCOUNT_PASSWORD_REQUIRED = True
+
+# Social Authentication Configuration
+# WeChat Configuration
+WECHAT_CLIENT_ID = config('WECHAT_CLIENT_ID', default='')
+WECHAT_CLIENT_SECRET = config('WECHAT_CLIENT_SECRET', default='')
+WECHAT_REDIRECT_URI = config('WECHAT_REDIRECT_URI', default='')
+WECHAT_CORP_ID = config('WECHAT_CORP_ID', default='')
+WECHAT_CORP_SECRET = config('WECHAT_CORP_SECRET', default='')
+
+# QQ Configuration
+QQ_CLIENT_ID = config('QQ_CLIENT_ID', default='')
+QQ_CLIENT_SECRET = config('QQ_CLIENT_SECRET', default='')
+QQ_REDIRECT_URI = config('QQ_REDIRECT_URI', default='')
+
+# Weibo Configuration (optional)
+WEIBO_CLIENT_ID = config('WEIBO_CLIENT_ID', default='')
+WEIBO_CLIENT_SECRET = config('WEIBO_CLIENT_SECRET', default='')
+WEIBO_REDIRECT_URI = config('WEIBO_REDIRECT_URI', default='')
+
+# Social Authentication Settings
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_PROVIDERS = {
+    'wechat': {
+        'APP': {
+            'client_id': WECHAT_CLIENT_ID,
+            'secret': WECHAT_CLIENT_SECRET,
+            'key': ''
+        },
+        'SCOPE': ['snsapi_userinfo'],
+        'AUTH_PARAMS': {'auth_type': 'scope'},
+        'METHOD': 'oauth2',
+        'LOCALE': 'zh_CN',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v1.0'
+    },
+    'qq': {
+        'APP': {
+            'client_id': QQ_CLIENT_ID,
+            'secret': QQ_CLIENT_SECRET,
+            'key': ''
+        },
+        'SCOPE': ['get_user_info'],
+        'METHOD': 'oauth2',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v1.0'
+    }
+}
+
+# Social Authentication Settings
+SOCIAL_AUTH_ENABLED_PROVIDERS = [
+    provider for provider, config_key in [
+        ('wechat', 'WECHAT_CLIENT_ID'),
+        ('qq', 'QQ_CLIENT_ID'),
+        ('weibo', 'WEIBO_CLIENT_ID'),
+    ] if config(config_key, default='')
+]
+
+SOCIAL_AUTH_DEFAULT_REDIRECT_URI = config(
+    'SOCIAL_AUTH_DEFAULT_REDIRECT_URI',
+    default='https://yourdomain.com/auth/callback/'
+)
+
+# Session and Cache settings for social auth
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=True, cast=bool)
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=True, cast=bool)
+SOCIAL_AUTH_STATE_EXPIRE_SECONDS = 600  # 10 minutes
