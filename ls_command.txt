@@ -1,0 +1,2 @@
+#!/bin/bash
+find /home/subway/all_web -type f -name "*.py" -o -name "*.txt" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" -o -name "*.json" | head -20
