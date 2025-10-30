@@ -1,7 +1,13 @@
 """
-订单管理视图 - 简化版
+订单管理视图
 
-这个模块包含了订单处理系统的核心API视图，不依赖drf_spectacular。
+这个模块包含了订单处理系统的所有API视图，支持：
+- 订单CRUD操作
+- 订单状态管理
+- 订单附加项管理
+- 订单要求和交付管理
+- 订单消息和争议处理
+- 订单统计和分析
 """
 
 from rest_framework import generics, status, permissions
@@ -13,6 +19,8 @@ from django.db.models import Q, Count, Sum, Avg
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+# from drf_spectacular.utils import extend_schema, OpenApiParameter
+# from drf_spectacular.types import OpenApiTypes
 
 from .models import (
     Order, OrderStatusHistory, OrderExtra, OrderRequirement,
@@ -26,7 +34,7 @@ from .serializers import (
     OrderDisputeSerializer, OrderCancellationSerializer
 )
 from apps.gigs.models import Gig
-from apps.accounts.permissions import IsClient, IsFreelancer
+from apps.accounts.permissions import IsClient, IsFreelancer, IsOwnerOrReadOnly
 
 
 class OrderListAPIView(generics.ListAPIView):
@@ -35,7 +43,7 @@ class OrderListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['order_number', 'gig__title', 'client__username', 'freelancer__username']
-    filterset_fields = ['status', 'priority']
+    filterset_fields = ['status', 'priority', 'gig__category']
     ordering_fields = ['created_at', 'updated_at', 'delivery_deadline', 'total_price']
     ordering = ['-created_at']
 
@@ -64,11 +72,45 @@ class OrderDetailAPIView(generics.RetrieveUpdateAPIView):
             return Order.objects.all()
         return Order.objects.filter(Q(client=user) | Q(freelancer=user))
 
+    def get_serializer_class(self):
+        """根据请求方法选择序列化器"""
+        if self.request.method in ['PUT', 'PATCH']:
+            return OrderUpdateSerializer
+        return OrderDetailSerializer
+
+    @extend_schema(
+        summary="获取订单详情",
+        description="根据订单ID获取订单详细信息"
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="更新订单",
+        description="更新订单信息（仅限部分字段）"
+    )
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="部分更新订单",
+        description="部分更新订单信息"
+    )
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs)
+
 
 class OrderCreateAPIView(generics.CreateAPIView):
     """订单创建API视图"""
     serializer_class = OrderCreateSerializer
     permission_classes = [permissions.IsAuthenticated, IsClient]
+
+    @extend_schema(
+        summary="创建订单",
+        description="基于服务创建新订单"
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         """设置订单创建者"""
@@ -79,6 +121,10 @@ class OrderStatusUpdateAPIView(APIView):
     """订单状态更新API视图"""
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(
+        summary="更新订单状态",
+        description="更新订单状态，记录状态变更历史"
+    )
     def post(self, request, slug):
         try:
             order = Order.objects.get(slug=slug)
@@ -135,6 +181,20 @@ class OrderExtraListCreateAPIView(generics.ListCreateAPIView):
         order_slug = self.kwargs.get('slug')
         return OrderExtra.objects.filter(order__slug=order_slug)
 
+    @extend_schema(
+        summary="获取订单附加项列表",
+        description="获取指定订单的所有附加项"
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="添加订单附加项",
+        description="为订单添加新的附加项"
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
 
 class OrderRequirementListCreateAPIView(generics.ListCreateAPIView):
     """订单要求列表和创建API视图"""
@@ -146,17 +206,42 @@ class OrderRequirementListCreateAPIView(generics.ListCreateAPIView):
         order_slug = self.kwargs.get('slug')
         return OrderRequirement.objects.filter(order__slug=order_slug)
 
+    @extend_schema(
+        summary="获取订单要求列表",
+        description="获取指定订单的所有要求"
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="添加订单要求",
+        description="为订单添加新的要求"
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
 
 class OrderDeliveryListCreateAPIView(generics.ListCreateAPIView):
     """订单交付列表和创建API视图"""
-    serializer_class = DeliverySerializer
+    serializer_class = OrderDeliverySerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         """获取指定订单的交付记录"""
         order_slug = self.kwargs.get('slug')
-        return Delivery.objects.filter(order__slug=order_slug)
+        return OrderDelivery.objects.filter(order__slug=order_slug)
 
+    @extend_schema(
+        summary="获取订单交付列表",
+        description="获取指定订单的所有交付记录"
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="提交订单交付",
+        description="为订单提交新的交付"
+    )
     def post(self, request, *args, **kwargs):
         # 权限检查：只有自由职业者可以提交交付
         if request.user.user_type != 'freelancer':
@@ -177,19 +262,37 @@ class OrderMessageListCreateAPIView(generics.ListCreateAPIView):
         order_slug = self.kwargs.get('slug')
         return OrderMessage.objects.filter(order__slug=order_slug).order_by('created_at')
 
+    @extend_schema(
+        summary="获取订单消息列表",
+        description="获取指定订单的所有消息"
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="发送订单消息",
+        description="向订单发送新消息"
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
 
 class OrderDisputeCreateAPIView(generics.CreateAPIView):
     """订单争议创建API视图"""
     serializer_class = OrderDisputeSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(
+        summary="创建订单争议",
+        description="为订单创建争议"
+    )
     def post(self, request, *args, **kwargs):
         try:
             order_slug = self.kwargs.get('slug')
             order = Order.objects.get(slug=order_slug)
 
             # 检查是否已有进行中的争议
-            if OrderDispute.objects.filter(order=order, status__in=['open', 'investigating']).exists():
+            if OrderDispute.objects.filter(order=order, status__in=['pending', 'investigating']).exists():
                 return Response(
                     {'error': '该订单已有进行中的争议'},
                     status=status.HTTP_400_BAD_REQUEST
@@ -217,6 +320,10 @@ class OrderCancellationAPIView(APIView):
     """订单取消API视图"""
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(
+        summary="取消订单",
+        description="申请取消订单并提供原因"
+    )
     def post(self, request, slug):
         try:
             order = Order.objects.get(slug=slug)
@@ -241,12 +348,15 @@ class OrderCancellationAPIView(APIView):
                 with transaction.atomic():
                     # 更新订单状态
                     order.status = 'cancelled'
+                    order.cancelled_at = timezone.now()
+                    order.cancelled_by = user
+                    order.cancellation_reason = serializer.validated_data['reason']
                     order.save()
 
                     # 创建状态历史记录
                     OrderStatusHistory.objects.create(
                         order=order,
-                        old_status='pending',  # 假设之前是待处理状态
+                        old_status='active',  # 假设之前是活跃状态
                         new_status='cancelled',
                         changed_by=user,
                         notes=f"取消原因: {serializer.validated_data['reason']}"
@@ -265,6 +375,10 @@ class OrderCancellationAPIView(APIView):
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
+@extend_schema(
+    summary="获取用户订单统计",
+    description="获取用户的订单统计信息"
+)
 def order_stats(request):
     """获取用户订单统计"""
     user = request.user
@@ -279,11 +393,11 @@ def order_stats(request):
     # 基础统计
     stats = {
         'total_orders': orders.count(),
-        'active_orders': orders.filter(status='in_progress').count(),
+        'active_orders': orders.filter(status='active').count(),
         'completed_orders': orders.filter(status='completed').count(),
         'cancelled_orders': orders.filter(status='cancelled').count(),
         'total_revenue': orders.filter(status='completed').aggregate(
-            total=Sum('total_price'))['total'] or 0,
+            total=Sum('total_amount'))['total'] or 0,
         'pending_orders': orders.filter(status='pending').count(),
         'disputed_orders': orders.filter(status='disputed').count(),
     }
@@ -300,6 +414,10 @@ def order_stats(request):
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated, IsFreelancer])
+@extend_schema(
+    summary="获取自由职业者收入统计",
+    description="获取自由职业者的收入统计信息"
+)
 def freelancer_earnings(request):
     """获取自由职业者收入统计"""
     freelancer = request.user
@@ -307,8 +425,8 @@ def freelancer_earnings(request):
 
     # 收入统计
     earnings = orders.aggregate(
-        total_earnings=Sum('freelancer_earnings'),
-        avg_order_value=Avg('total_price'),
+        total_earnings=Sum('total_amount'),
+        avg_order_value=Avg('total_amount'),
         completed_orders=Count('id')
     )
 
@@ -316,7 +434,7 @@ def freelancer_earnings(request):
     monthly_earnings = orders.extra(
         select={'month': 'strftime("%%Y-%%m", created_at)'}
     ).values('month').annotate(
-        monthly_total=Sum('freelancer_earnings'),
+        monthly_total=Sum('total_amount'),
         monthly_count=Count('id')
     ).order_by('month')
 
@@ -330,6 +448,10 @@ def freelancer_earnings(request):
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
+@extend_schema(
+    summary="搜索订单",
+    description="根据关键词搜索订单"
+)
 def search_orders(request):
     """搜索订单"""
     query = request.GET.get('q', '').strip()
@@ -353,7 +475,7 @@ def search_orders(request):
         Q(gig__description__icontains=query) |
         Q(client__username__icontains=query) |
         Q(freelancer__username__icontains=query) |
-        Q(title__icontains=query)
+        Q(notes__icontains=query)
     ).select_related('client', 'freelancer', 'gig')
 
     # 序列化结果
@@ -370,6 +492,10 @@ class OrderTrackingAPIView(APIView):
     """订单追踪API视图"""
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(
+        summary="获取订单追踪信息",
+        description="获取订单的实时追踪信息"
+    )
     def get(self, request, slug):
         try:
             order = Order.objects.get(slug=slug)
@@ -382,12 +508,18 @@ class OrderTrackingAPIView(APIView):
                     status=status.HTTP_403_FORBIDDEN
                 )
 
+            # 获取追踪信息
+            tracking_info = OrderTracking.objects.filter(order=order).order_by('-updated_at')
+
+            # 获取最近的追踪记录
+            latest_tracking = tracking_info.first()
+
             response_data = {
                 'order_number': order.order_number,
                 'status': order.status,
-                'estimated_delivery': order.estimated_delivery,
-                'is_overdue': order.is_overdue,
-                'days_until_deadline': order.days_until_deadline
+                'current_location': latest_tracking.current_location if latest_tracking else None,
+                'estimated_delivery': order.deadline,
+                'tracking_history': OrderTrackingSerializer(tracking_info, many=True).data
             }
 
             return Response(response_data)
@@ -395,9 +527,38 @@ class OrderTrackingAPIView(APIView):
         except Order.DoesNotExist:
             return Response({'error': '订单不存在'}, status=status.HTTP_404_NOT_FOUND)
 
+    @extend_schema(
+        summary="更新订单追踪信息",
+        description="更新订单的追踪信息（仅限自由职业者）"
+    )
+    def post(self, request, slug):
+        try:
+            order = Order.objects.get(slug=slug)
+
+            # 权限检查：只有自由职业者可以更新追踪信息
+            if request.user.user_type != 'freelancer' or order.freelancer != request.user:
+                return Response(
+                    {'error': '只有订单的自由职业者可以更新追踪信息'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            serializer = OrderTrackingSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(order=order, updated_by=request.user)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Order.DoesNotExist:
+            return Response({'error': '订单不存在'}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
+@extend_schema(
+    summary="确认订单交付",
+    description="客户端确认订单交付完成"
+)
 def confirm_delivery(request, slug):
     """确认订单交付"""
     try:
@@ -420,7 +581,7 @@ def confirm_delivery(request, slug):
         with transaction.atomic():
             # 更新订单状态
             order.status = 'completed'
-            order.actual_delivery = timezone.now()
+            order.completed_at = timezone.now()
             order.save()
 
             # 创建状态历史记录
@@ -435,7 +596,7 @@ def confirm_delivery(request, slug):
             return Response({
                 'message': '交付确认成功，订单已完成',
                 'order_status': order.status,
-                'completed_at': order.actual_delivery
+                'completed_at': order.completed_at
             })
 
     except Order.DoesNotExist:
@@ -444,6 +605,10 @@ def confirm_delivery(request, slug):
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
+@extend_schema(
+    summary="请求订单修改",
+    description="客户端请求修改订单交付"
+)
 def request_revision(request, slug):
     """请求订单修改"""
     try:
@@ -463,6 +628,13 @@ def request_revision(request, slug):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # 检查修改次数
+        if hasattr(order, 'revision_count') and order.revision_count >= order.max_revisions:
+            return Response(
+                {'error': '已达到最大修改次数限制'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         revision_request = request.data.get('revision_request', '').strip()
         if not revision_request:
             return Response(
@@ -472,14 +644,19 @@ def request_revision(request, slug):
 
         with transaction.atomic():
             # 更新订单状态
-            order.status = 'revision_requested'
+            order.status = 'revision'
+            order.revision_request = revision_request
+            if hasattr(order, 'revision_count'):
+                order.revision_count += 1
+            else:
+                order.revision_count = 1
             order.save()
 
             # 创建状态历史记录
             OrderStatusHistory.objects.create(
                 order=order,
                 old_status='delivered',
-                new_status='revision_requested',
+                new_status='revision',
                 changed_by=request.user,
                 notes=f'修改请求: {revision_request}'
             )
