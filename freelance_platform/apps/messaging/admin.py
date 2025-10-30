@@ -37,9 +37,42 @@ class BlockedUserAdmin(admin.ModelAdmin):
     ordering = ('-created_at',)
 
 
-# Register other models with basic admin
-admin.site.register(MessageAttachment)
-admin.site.register(MessageReaction)
-admin.site.register(MessageReport)
-admin.site.register(MessagingStat)
-admin.site.register(ConversationTag)
+# Detailed admin classes for other models
+@admin.register(MessageAttachment)
+class MessageAttachmentAdmin(admin.ModelAdmin):
+    list_display = ('message', 'filename', 'file_size', 'file_type', 'created_at')
+    list_filter = ('file_type', 'created_at')
+    search_fields = ('filename', 'message__content')
+    ordering = ('-created_at',)
+
+
+@admin.register(MessageReaction)
+class MessageReactionAdmin(admin.ModelAdmin):
+    list_display = ('message', 'user', 'reaction_type', 'created_at')
+    list_filter = ('reaction_type', 'created_at')
+    search_fields = ('message__content', 'user__username')
+    ordering = ('-created_at',)
+
+
+@admin.register(MessageReport)
+class MessageReportAdmin(admin.ModelAdmin):
+    list_display = ('message', 'reporter', 'reason', 'status', 'created_at', 'reviewed_at')
+    list_filter = ('reason', 'status', 'created_at')
+    search_fields = ('message__content', 'reporter__username', 'description')
+    ordering = ('-created_at',)
+    raw_id_fields = ('message', 'reporter')
+
+
+@admin.register(MessagingStat)
+class MessagingStatAdmin(admin.ModelAdmin):
+    list_display = ('date', 'total_messages', 'active_conversations', 'active_users', 'created_at')
+    list_filter = ('date',)
+    ordering = ('-date',)
+
+
+@admin.register(ConversationTag)
+class ConversationTagAdmin(admin.ModelAdmin):
+    list_display = ('user', 'conversation', 'tag_name', 'color', 'created_at')
+    list_filter = ('tag_name', 'created_at')
+    search_fields = ('user__username', 'tag_name', 'conversation__subject')
+    ordering = ('-created_at',)

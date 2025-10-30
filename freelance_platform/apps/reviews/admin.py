@@ -94,5 +94,9 @@ class ReviewStatAdmin(admin.ModelAdmin):
         return False
 
 
-# Register other models
-admin.site.register(ReviewHelpful)
+@admin.register(ReviewHelpful)
+class ReviewHelpfulAdmin(admin.ModelAdmin):
+    list_display = ('review', 'user', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('review__review_content', 'user__username')
+    ordering = ('-created_at',)
