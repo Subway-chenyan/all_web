@@ -158,7 +158,7 @@ const TagInput: React.FC<TagInputProps> = ({
       .filter(tag => tag);
 
     if (pastedTags.length > 0) {
-      let newTags = [...tags];
+      const newTags = [...tags];
       let addedCount = 0;
 
       for (const tag of pastedTags) {

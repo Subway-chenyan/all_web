@@ -2,14 +2,20 @@ import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { cn } from '@/utils';
 
+export interface ChartDataItem {
+  [key: string]: string | number | boolean | null | undefined;
+}
+
+export interface LineConfig {
+  dataKey: string;
+  stroke: string;
+  name: string;
+  strokeWidth?: number;
+}
+
 export interface LineChartProps {
-  data: any[];
-  lines: {
-    dataKey: string;
-    stroke: string;
-    name: string;
-    strokeWidth?: number;
-  }[];
+  data: ChartDataItem[];
+  lines: LineConfig[];
   xAxisDataKey: string;
   title?: string;
   height?: number;

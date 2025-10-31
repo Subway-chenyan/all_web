@@ -517,7 +517,7 @@ export const useAuthStore = create<AuthStore>()(
           });
 
           return response.ok;
-        } catch (error) {
+        } catch {
           return false;
         }
       },
@@ -549,15 +549,14 @@ export const useAuthStore = create<AuthStore>()(
         registerForm: state.registerForm,
       }),
     }
-  )
-);
+  );
 
 // Utility function to get CSRF token
 function getCSRFToken(): string {
   const name = 'csrftoken';
   const cookies = document.cookie.split(';');
 
-  for (let cookie of cookies) {
+  for (const cookie of cookies) {
     const [cookieName, cookieValue] = cookie.trim().split('=');
     if (cookieName === name) {
       return decodeURIComponent(cookieValue);

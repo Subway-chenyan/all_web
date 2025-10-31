@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, X, Check, Settings, Info, AlertTriangle, CheckCircle, MessageCircle } from 'lucide-react';
+import { Bell, X, Check, Info, AlertTriangle, CheckCircle, MessageCircle } from 'lucide-react';
 import { cn } from '@/utils';
 
 export interface Notification {

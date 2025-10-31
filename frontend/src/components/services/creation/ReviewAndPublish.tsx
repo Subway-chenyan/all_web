@@ -41,7 +41,7 @@ const ReviewAndPublish: React.FC<ReviewAndPublishProps> = ({
   // Calculate completion percentage
   const calculateCompletion = () => {
     let completed = 0;
-    let total = 7;
+    const total = 7;
 
     if (data.title && data.title.length >= 10) completed++;
     if (data.category && data.subcategory) completed++;

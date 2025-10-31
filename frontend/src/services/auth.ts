@@ -109,7 +109,7 @@ class AuthService {
     const name = 'csrftoken';
     const cookies = document.cookie.split(';');
 
-    for (let cookie of cookies) {
+    for (const cookie of cookies) {
       const [cookieName, cookieValue] = cookie.trim().split('=');
       if (cookieName === name) {
         return decodeURIComponent(cookieValue);

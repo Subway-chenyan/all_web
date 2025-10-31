@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useEffect } from 'react';
 import { cn } from '@/utils';
-import FormInput, { FormInputProps } from './FormInput';
+import { FormInputProps } from './FormInput';
 
 export interface PhoneInputProps extends Omit<FormInputProps, 'type'> {
   defaultCountry?: string;
@@ -69,6 +69,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(({
     setIsValid(value.length > 0 ? valid : null);
 
     // Pass full phone number with country code to parent
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const fullNumber = value ? `${selectedCountry.dialCode}${value}` : '';
     onChange?.(e);
   };

@@ -2,12 +2,14 @@ import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { cn } from '@/utils';
 
+export interface PieChartDataItem {
+  name: string;
+  value: number;
+  color?: string;
+}
+
 export interface PieChartProps {
-  data: {
-    name: string;
-    value: number;
-    color?: string;
-  }[];
+  data: PieChartDataItem[];
   title?: string;
   height?: number;
   className?: string;
@@ -45,7 +47,7 @@ const PieChartComponent: React.FC<PieChartProps> = ({
     color: item.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length],
   }));
 
-  const renderLabel = (entry: any) => {
+  const renderLabel = (entry: PieChartDataItem) => {
     if (!showLabels) return null;
     const percentage = ((entry.value / data.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(1);
     return `${percentage}%`;

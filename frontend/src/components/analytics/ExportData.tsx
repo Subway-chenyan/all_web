@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { Download, FileText, FileSpreadsheet, FileImage } from 'lucide-react';
 import { cn } from '@/utils';
 
+export interface ExportDataItem {
+  [key: string]: string | number | boolean | null | undefined;
+}
+
 export interface ExportDataProps {
-  data: any[];
+  data: ExportDataItem[];
   filename?: string;
   formats?: ('csv' | 'excel' | 'pdf' | 'json')[];
-  onExport?: (format: string, data: any[]) => void;
+  onExport?: (format: string, data: ExportDataItem[]) => void;
   className?: string;
   disabled?: boolean;
 }
@@ -27,9 +31,9 @@ const ExportData: React.FC<ExportDataProps> = ({
     { value: 'excel', label: 'Excel', icon: <FileSpreadsheet className="w-4 h-4" /> },
     { value: 'json', label: 'JSON', icon: <FileText className="w-4 h-4" /> },
     { value: 'pdf', label: 'PDF', icon: <FileImage className="w-4 h-4" /> },
-  ].filter(option => formats.includes(option.value as any));
+  ].filter(option => formats.includes(option.value as 'csv' | 'excel' | 'pdf' | 'json'));
 
-  const downloadCSV = (data: any[]) => {
+  const downloadCSV = (data: ExportDataItem[]) => {
     if (!data.length) return;
 
     const headers = Object.keys(data[0]);
@@ -53,7 +57,7 @@ const ExportData: React.FC<ExportDataProps> = ({
     URL.revokeObjectURL(link.href);
   };
 
-  const downloadJSON = (data: any[]) => {
+  const downloadJSON = (data: ExportDataItem[]) => {
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: 'application/json;charset=utf-8;'
     });

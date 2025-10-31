@@ -22,8 +22,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   fallback,
 }) => {
   const location = useLocation();
-  const { isAuthenticated, isLoading, user } = useAuth();
-  const { canAccess, requireRole, requireVerification: checkVerification, requireActive: checkActive } = useAuthGuard();
+  const { isAuthenticated, isLoading } = useAuth();
+  const { requireRole, requireVerification: checkVerification, requireActive: checkActive } = useAuthGuard();
 
   // Show loading spinner while checking authentication
   if (isLoading) {

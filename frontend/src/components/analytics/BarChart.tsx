@@ -2,13 +2,19 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { cn } from '@/utils';
 
+export interface ChartDataItem {
+  [key: string]: string | number | boolean | null | undefined;
+}
+
+export interface BarConfig {
+  dataKey: string;
+  fill: string;
+  name: string;
+}
+
 export interface BarChartProps {
-  data: any[];
-  bars: {
-    dataKey: string;
-    fill: string;
-    name: string;
-  }[];
+  data: ChartDataItem[];
+  bars: BarConfig[];
   xAxisDataKey: string;
   title?: string;
   height?: number;

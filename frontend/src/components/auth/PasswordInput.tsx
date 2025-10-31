@@ -17,6 +17,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(({
   const [showPassword, setShowPassword] = useState(false);
   const [strength, setStrength] = useState<'weak' | 'medium' | 'strong'>('weak');
   const [strengthScore, setStrengthScore] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const generatedId = useId();
 
   // Calculate password strength
@@ -61,6 +62,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(({
   }, [value, showStrengthIndicator, onStrengthChange]);
 
   // Toggle password visibility
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

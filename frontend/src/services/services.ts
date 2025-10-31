@@ -58,7 +58,7 @@ export interface ServiceRequirement {
   placeholder?: string;
 }
 
-export interface UserProfile extends User['profile'] {
+export interface UserProfile extends Omit<User, 'id' | 'username' | 'email' | 'role' | 'isVerified' | 'createdAt' | 'updatedAt'> {
   badges: SellerBadge[];
   languages: Language[];
   education: Education[];

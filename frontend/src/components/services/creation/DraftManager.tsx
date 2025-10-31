@@ -83,7 +83,7 @@ const DraftManager: React.FC<DraftManagerProps> = ({
 
   const getDraftCompletion = (draft: ServiceDraft): number => {
     let completed = 0;
-    let total = 7;
+    const total = 7;
 
     if (draft.data.title) completed++;
     if (draft.data.category) completed++;

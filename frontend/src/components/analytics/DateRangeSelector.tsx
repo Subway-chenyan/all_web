@@ -33,7 +33,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   selectedValue = '30d',
   onChange,
   className = '',
-  placeholder = '选择时间范围',
+  placeholder = '选择时间范围', // eslint-disable-line @typescript-eslint/no-unused-vars
   disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);

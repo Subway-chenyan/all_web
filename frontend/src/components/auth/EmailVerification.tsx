@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/utils';
 import Button from '@/components/ui/Button';
-import FormInput from './FormInput';
 import FormError from './FormError';
 import LoadingSpinner from './LoadingSpinner';
 

@@ -125,7 +125,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     }
   };
 
-  const handleFileSelect = async (files: FileList | null) => {
+  const handleFileSelect = useCallback(async (files: FileList | null) => {
     if (!files || disabled) return;
 
     const newErrors: string[] = [];
@@ -147,7 +147,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  };
+  }, [disabled, files.length, maxFiles, onChange]);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -168,7 +168,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
     const droppedFiles = e.dataTransfer.files;
     handleFileSelect(droppedFiles);
-  }, [disabled, files.length]);
+  }, [disabled, files.length, handleFileSelect]);
 
   const removeFile = (fileId: string) => {
     const fileToRemove = files.find(file => file.id === fileId);
