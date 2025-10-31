@@ -85,11 +85,7 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     formatDate,
   };
 
-  return (
-    <I18nContext.Provider value={value}>
-      {children}
-    </I18nContext.Provider>
-  );
+  return React.createElement(I18nContext.Provider, { value }, children);
 };
 
 export const useI18n = (): I18nContextType => {

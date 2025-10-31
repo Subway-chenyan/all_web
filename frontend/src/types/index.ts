@@ -361,3 +361,150 @@ export interface Transaction {
   createdAt: string;
   updatedAt: string;
 }
+
+// Verification related types
+export interface VerificationStep {
+  id: string;
+  title: string;
+  description: string;
+  type: 'required' | 'optional';
+  status: 'pending' | 'in_progress' | 'completed' | 'failed';
+  isRequired: boolean;
+  order: number;
+}
+
+export interface VerificationDocument {
+  id: string;
+  type: 'id_card' | 'passport' | 'professional_cert' | 'diploma' | 'portfolio' | 'video_intro' | 'social_media';
+  filename: string;
+  fileUrl: string;
+  fileType: string;
+  fileSize: number;
+  status: 'pending' | 'under_review' | 'approved' | 'rejected';
+  submittedAt: string;
+  reviewedAt?: string;
+  reviewNote?: string;
+}
+
+export interface VerificationStatus {
+  overallStatus: 'not_started' | 'in_progress' | 'submitted' | 'under_review' | 'approved' | 'rejected';
+  completedSteps: number;
+  totalSteps: number;
+  steps: VerificationStep[];
+  documents: VerificationDocument[];
+  submittedAt?: string;
+  reviewedAt?: string;
+  rejectionReason?: string;
+}
+
+export interface FreelancerProfile {
+  id: string;
+  userId: number;
+  accountType: 'individual' | 'company';
+  companyName?: string;
+  companyRegistrationNumber?: string;
+  professionalTitle: string;
+  experience: string;
+  education: EducationItem[];
+  skills: SkillItem[];
+  portfolio: PortfolioItem[];
+  hourlyRate: number;
+  currency: string;
+  availabilityStatus: 'available' | 'busy' | 'unavailable';
+  responseTime: number;
+  languages: LanguageItem[];
+  location: LocationItem;
+  bio: string;
+  videoIntroduction?: string;
+  professionalCertifications: CertificationItem[];
+  socialMediaLinks: SocialMediaLink[];
+  verificationStatus: VerificationStatus;
+  pricingTiers: PricingTier[];
+  preferredCategories: number[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EducationItem {
+  id: string;
+  institution: string;
+  degree: string;
+  field: string;
+  startDate: string;
+  endDate?: string;
+  isCurrent: boolean;
+  diplomaDocument?: string;
+}
+
+export interface SkillItem {
+  id: string;
+  name: string;
+  category: string;
+  level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  yearsExperience: number;
+  isVerified: boolean;
+  verificationDocument?: string;
+}
+
+export interface LanguageItem {
+  language: string;
+  proficiency: 'basic' | 'conversational' | 'professional' | 'native';
+  certificate?: string;
+}
+
+export interface LocationItem {
+  country: string;
+  province: string;
+  city: string;
+  timezone: string;
+}
+
+export interface CertificationItem {
+  id: string;
+  name: string;
+  issuingOrganization: string;
+  issueDate: string;
+  expiryDate?: string;
+  credentialId?: string;
+  credentialUrl?: string;
+  document: string;
+  status: 'pending' | 'verified' | 'rejected';
+}
+
+export interface SocialMediaLink {
+  platform: 'linkedin' | 'github' | 'behance' | 'dribbble' | 'wechat' | 'weibo' | 'qq';
+  url: string;
+  username: string;
+  followers?: number;
+  isVerified: boolean;
+}
+
+export interface PricingTier {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  deliveryTime: number;
+  revisions: number;
+  features: string[];
+  isPopular: boolean;
+}
+
+export interface OnboardingStep {
+  id: string;
+  title: string;
+  description: string;
+  component: string;
+  isRequired: boolean;
+  order: number;
+  estimatedTime: number;
+}
+
+export interface OnboardingProgress {
+  currentStep: string;
+  completedSteps: string[];
+  savedData: Record<string, any>;
+  isCompleted: boolean;
+  startedAt: string;
+  completedAt?: string;
+}

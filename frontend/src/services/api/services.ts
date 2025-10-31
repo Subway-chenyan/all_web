@@ -1,5 +1,5 @@
 import { apiRequest } from './index';
-import { Service, ServicePackage, ServiceRequirement, PaginatedResponse, FilterOptions, PaginationParams } from '@/types';
+import { Service, ServicePackage, ServiceRequirement, PaginatedResponse, FilterOptions, PaginationParams, Category, User } from '@/types';
 
 export const servicesService = {
   // Get all services with pagination and filtering
@@ -134,5 +134,61 @@ export const servicesService = {
   getServiceStats: async (id: number) => {
     const response = await apiRequest.get(`/services/${id}/stats/`);
     return response.data;
+  },
+
+  // Get service categories
+  getCategories: async () => {
+    const response = await apiRequest.get<Category[]>('/categories/');
+    return response.data;
+  },
+
+  // Get top sellers
+  getTopSellers: async (limit = 12) => {
+    const response = await apiRequest.get<User[]>('/sellers/top/', { limit });
+    return response.data;
+  },
+
+  // Toggle favorite service
+  toggleFavorite: async (serviceId: number) => {
+    const response = await apiRequest.post(`/services/${serviceId}/favorite/`);
+    return response.data;
+  },
+
+  // Get favorite services
+  getFavoriteServices: async (params?: PaginationParams) => {
+    const response = await apiRequest.get<PaginatedResponse<Service>>('/services/favorites/', params);
+    return response.data;
+  },
+
+  // Get related services
+  getRelatedServices: async (serviceId: number, limit = 8) => {
+    const response = await apiRequest.get<Service[]>(`/services/${serviceId}/related/`, { limit });
+    return response.data;
+  },
+
+  // Get services by seller
+  getSellerServices: async (sellerId: number, params?: PaginationParams) => {
+    const response = await apiRequest.get<PaginatedResponse<Service>>(`/services/seller/${sellerId}/`, params);
+    return response.data;
+  },
+
+  // Get popular services
+  getPopularServices: async (limit = 12) => {
+    const response = await apiRequest.get<Service[]>('/services/popular/', { limit });
+    return response.data;
+  },
+
+  // Get recently viewed services (from localStorage or API)
+  getRecentlyViewed: () => {
+    const viewed = localStorage.getItem('recently_viewed_services');
+    return viewed ? JSON.parse(viewed) : [];
+  },
+
+  // Add service to recently viewed
+  addToRecentlyViewed: (serviceId: number) => {
+    const viewed = servicesService.getRecentlyViewed();
+    const updated = [serviceId, ...viewed.filter((id: number) => id !== serviceId)].slice(0, 20);
+    localStorage.setItem('recently_viewed_services', JSON.stringify(updated));
+    return updated;
   },
 };

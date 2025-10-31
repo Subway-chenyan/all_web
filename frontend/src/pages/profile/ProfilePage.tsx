@@ -1,10 +1,12 @@
 import React from 'react';
+import { UserProfilePage } from './UserProfilePage';
 
 export const ProfilePage: React.FC = () => {
-  return (
-    <div className="text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Profile</h2>
-      <p className="text-gray-600">ProfilePage组件 - 待实现</p>
-    </div>
-  );
+  // In a real implementation, you would:
+  // 1. Get the profile ID from URL parameters
+  // 2. Determine if it's the user's own profile or someone else's
+  // 3. Load the appropriate profile data
+  // 4. Handle different viewing modes (edit vs view)
+
+  return <UserProfilePage />;
 };
