@@ -28,7 +28,7 @@ interface NavItem {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onMenuClick, className }) => {
-  const { isAuthenticated, logout, getDisplayName, getAvatarUrl } = useAuth();
+  const { isAuthenticated, logout: handleLogout, getDisplayName, getAvatarUrl } = useAuth();
   const { getTotalItems } = useCartStore();
   const { t } = useI18n();
   const navigate = useNavigate();

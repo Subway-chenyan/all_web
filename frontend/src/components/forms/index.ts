@@ -7,13 +7,11 @@ export { default as CategorySelector } from './CategorySelector';
 export { default as PriceInput } from './PriceInput';
 export { default as DurationSelector } from './DurationSelector';
 
-export type {
-  RichTextEditorProps,
-  ImageUploadProps,
-  VideoUploadProps,
-  FileUploadProps,
-  TagInputProps,
-  CategorySelectorProps,
-  PriceInputProps,
-  DurationSelectorProps
-} from './RichTextEditor';
+export type { RichTextEditorProps } from './RichTextEditor';
+export type { ImageUploadProps } from './ImageUpload';
+export type { VideoUploadProps } from './VideoUpload';
+export type { FileUploadProps } from './FileUpload';
+export type { TagInputProps } from './TagInput';
+export type { CategorySelectorProps } from './CategorySelector';
+export type { PriceInputProps } from './PriceInput';
+export type { DurationSelectorProps } from './DurationSelector';

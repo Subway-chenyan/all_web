@@ -1,4 +1,7 @@
-/* Import Chinese design system styles */
+/* Tailwind v4 core utilities */
+@import "tailwindcss";
+
+/* Chinese design system styles */
 @import './styles/globals.css';
 @import './styles/antd-theme.css';
 

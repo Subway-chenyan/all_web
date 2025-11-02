@@ -4,6 +4,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: './',
   plugins: [react()],
   resolve: {
     alias: {
@@ -20,15 +21,10 @@ export default defineConfig({
       '@/theme': path.resolve(__dirname, './src/theme'),
     },
   },
-  css: {
-    postcss: {
-      plugins: [
-        // PostCSS configuration is handled by postcss.config.js
-      ],
-    },
-  },
   server: {
-    port: 3000,
+    host: '0.0.0.0',
+    port: 5173,
+    strictPort: false,
     proxy: {
       '/api': {
         target: 'http://localhost:8002',

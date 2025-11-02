@@ -15,7 +15,7 @@ class AuthService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+      baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8002/api',
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
@@ -349,7 +349,7 @@ class AuthService {
 
   // Get social login URL
   getSocialLoginUrl(provider: 'wechat' | 'qq' | 'alipay'): string {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8002';
     const redirectUrl = encodeURIComponent(`${window.location.origin}/auth/callback/${provider}`);
 
     switch (provider) {

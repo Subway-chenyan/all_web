@@ -1,6 +1,6 @@
 import React from 'react';
-import { FreelancerDashboard } from './FreelancerDashboard';
-import { ClientDashboard } from './ClientDashboard';
+import FreelancerDashboard from './FreelancerDashboard';
+import ClientDashboard from './ClientDashboard';
 
 // Mock user role - in a real app, this would come from authentication context
 const userRole = 'freelancer'; // 'freelancer' | 'client' | 'admin'

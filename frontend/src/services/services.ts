@@ -1,5 +1,5 @@
 import { apiRequest } from './api';
-import { Service, ServicePackage, Review, User, Category, Subcategory, PaginatedResponse, ApiResponse } from '@/types';
+import { Service, ServicePackage, Review, User, PaginatedResponse, ApiResponse } from '@/types';
 
 // Extended types for service details
 export interface ServiceDetail extends Service {
@@ -122,7 +122,7 @@ export interface ContactSellerData {
 export interface CreateOrderData {
   serviceId: number;
   packageId?: number;
-  requirements: Record<string, any>;
+  requirements: Record<string, unknown>;
   customRequirements?: string;
   deliveryDate?: string;
   attachments?: File[];

@@ -13,8 +13,8 @@ export { MainLayout } from './MainLayout';
 export { AuthLayout } from './AuthLayout';
 
 // Export types for external use
-export type { default as HeaderProps } from './Header';
-export type { default as FooterProps } from './Footer';
-export type { default as SidebarProps } from './Sidebar';
-export type { default as MainLayoutProps } from './MainLayout';
-export type { default as AuthLayoutProps } from './AuthLayout';
+export type { HeaderProps } from './Header';
+export type { FooterProps } from './Footer';
+export type { SidebarProps } from './Sidebar';
+export type { MainLayoutProps } from './MainLayout';
+export type { AuthLayoutProps } from './AuthLayout';

@@ -105,8 +105,15 @@ export const servicesService = {
 
   // Get featured services
   getFeaturedServices: async (limit = 12) => {
-    const response = await apiRequest.get<Service[]>('/services/featured/', { limit });
-    return response.data;
+    // Backend exposes featured gigs via /api/gigs/ with query param is_featured=true
+    // Use Vite proxy with baseURL '/api' (set in api/index.ts)
+    const response = await apiRequest.get<PaginatedResponse<Service>>('/gigs/', {
+      is_featured: true,
+      page_size: limit,
+      ordering: '-created_at',
+    });
+    // apiRequest returns raw response body; extract results array from paginated payload
+    return (response as unknown as PaginatedResponse<Service>).results;
   },
 
   // Get recommended services

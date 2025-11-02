@@ -64,7 +64,7 @@ export const formatDate = (date: string | Date): string => {
 };
 
 // 创建React Context Provider
-import { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
 
 interface I18nContextType {
   t: (key: string, options?: any) => string;

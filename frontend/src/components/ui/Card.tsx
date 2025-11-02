@@ -271,4 +271,5 @@ Card.Body = CardBody;
 Card.Footer = CardFooter;
 Card.Service = ServiceCard;
 
+export { Card };
 export default Card;

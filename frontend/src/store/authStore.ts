@@ -92,7 +92,7 @@ interface AuthActions {
 type AuthStore = AuthState & AuthActions;
 
 // Create the auth store
-export const useAuthStore = create<AuthStore>()(
+export const useAuthStore = create<AuthStore>(
   persist(
     (set, get) => ({
       // Initial state
@@ -128,10 +128,11 @@ export const useAuthStore = create<AuthStore>()(
 
       // Authentication actions
       login: async (credentials) => {
-        set((state) => {
-          state.isLoading = true;
-          state.error = null;
-        });
+        set((state) => ({
+          ...state,
+          isLoading: true,
+          error: null,
+        }));
 
         try {
           const response = await fetch('/api/auth/login/', {
@@ -146,7 +147,7 @@ export const useAuthStore = create<AuthStore>()(
           const data: AuthResponse = await response.json();
 
           if (!response.ok) {
-            throw new Error(data.error || '登录失败');
+            throw new Error('登录失败');
           }
 
           set({
@@ -194,7 +195,7 @@ export const useAuthStore = create<AuthStore>()(
           const result: AuthResponse = await response.json();
 
           if (!response.ok) {
-            throw new Error(result.error || '注册失败');
+            throw new Error('注册失败');
           }
 
           set({
@@ -300,7 +301,7 @@ export const useAuthStore = create<AuthStore>()(
           const result: AuthResponse = await response.json();
 
           if (!response.ok) {
-            throw new Error(result.error || `${provider}登录失败`);
+            throw new Error(`${provider}登录失败`);
           }
 
           set({
@@ -487,10 +488,11 @@ export const useAuthStore = create<AuthStore>()(
 
             if (response.ok) {
               const user = await response.json();
-              set((state) => {
-                state.user = user;
-                state.isAuthenticated = true;
-              });
+              set((state) => ({
+                ...state,
+                user,
+                isAuthenticated: true,
+              }));
             } else if (response.status === 401) {
               // Token expired, try to refresh
               await get().refreshAccessToken();
@@ -540,7 +542,7 @@ export const useAuthStore = create<AuthStore>()(
           sessionStorage.removeItem(name);
         },
       })),
-      partialize: (state) => ({
+      partialize: (state: AuthStore) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
         accessToken: state.accessToken,

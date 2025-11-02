@@ -272,7 +272,7 @@ export interface SocialAuthData {
 }
 
 // API Response types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   message?: string;
@@ -332,7 +332,7 @@ export interface Notification {
   type: 'message' | 'order' | 'review' | 'system' | 'promotion';
   title: string;
   message: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   isRead: boolean;
   createdAt: string;
 }
@@ -503,7 +503,7 @@ export interface OnboardingStep {
 export interface OnboardingProgress {
   currentStep: string;
   completedSteps: string[];
-  savedData: Record<string, any>;
+  savedData: Record<string, unknown>;
   isCompleted: boolean;
   startedAt: string;
   completedAt?: string;

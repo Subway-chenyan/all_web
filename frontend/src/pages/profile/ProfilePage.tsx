@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserProfilePage } from './UserProfilePage';
+import UserProfilePage from './UserProfilePage';
 
 export const ProfilePage: React.FC = () => {
   // In a real implementation, you would:

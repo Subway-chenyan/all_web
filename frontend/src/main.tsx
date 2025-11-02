@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import './index.css'
-import './styles/globals.css'
+// globals.css is imported via index.css to ensure Tailwind processing order
 import App from './App.tsx'
 
 // Create React Query client

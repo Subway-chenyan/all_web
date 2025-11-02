@@ -1,7 +1,7 @@
 import React, { forwardRef, useId } from 'react';
 import { cn } from '@/utils';
 
-export interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface FormInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   error?: string;
   helperText?: string;

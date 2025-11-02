@@ -1,6 +1,4 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+/* Tailwind import moved to src/index.css to avoid duplication issues */
 
 /* CSS Variables for Chinese Design System */
 :root {
@@ -366,7 +364,7 @@ select:focus-visible {
 }
 
 .form-textarea {
-  @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm resize-vertical;
+  @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm resize-y;
 }
 
 .form-select {
@@ -429,7 +427,7 @@ select:focus-visible {
 
 /* Modal overlay */
 .modal-overlay {
-  @apply fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50;
+  @apply fixed inset-0 bg-gray-600/50 overflow-y-auto h-full w-full z-50;
 }
 
 .modal-container {
@@ -438,7 +436,7 @@ select:focus-visible {
 
 /* Toast notification styles */
 .toast {
-  @apply fixed top-4 right-4 z-50 max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden;
+  @apply fixed top-4 right-4 z-50 max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black/5 overflow-hidden;
 }
 
 .toast-success {
