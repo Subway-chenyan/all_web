@@ -1,70 +1,46 @@
-# 技能集市前端
+# 技能集市 - 前端应用
 
-这是技能集市平台的前端应用，基于 React + TypeScript + Vite 构建的现代化技能服务与交易平台。
+中国版Fiverr兼职平台的现代化React前端应用，连接自由职业者与客户。
 
-## 功能特性
+## 🚀 技术栈
 
-- 🚀 **现代化技术栈**: React 19 + TypeScript + Vite
-- 🎨 **响应式设计**: 基于Tailwind CSS的移动优先设计
-- 🔄 **状态管理**: Zustand + React Query
-- 🛡️ **类型安全**: 完整的TypeScript类型定义
-- 🌐 **国际化支持**: 中文优先的UI设计
-- 🔐 **用户认证**: 完整的登录注册流程
-- 📱 **移动端优化**: 响应式设计，支持各种设备
+- **框架**: React 18 + TypeScript
+- **构建工具**: Vite
+- **样式**: Tailwind CSS
+- **路由**: React Router v7
+- **状态管理**: Zustand + React Query
+- **HTTP客户端**: Axios
+- **表单**: React Hook Form + Zod
+- **图标**: Lucide React
+- **工具**: ESLint + TypeScript
 
-## 技术栈
-
-### 核心框架
-- **React 19** - 用户界面库
-- **TypeScript** - 类型安全的JavaScript
-- **Vite** - 现代化构建工具
-
-### 路由与状态管理
-- **React Router v7** - 客户端路由
-- **Zustand** - 轻量级状态管理
-- **React Query** - 服务器状态管理
-
-### 样式与UI
-- **Tailwind CSS** - 实用优先的CSS框架
-- **clsx & tailwind-merge** - 条件样式工具
-
-### 工具与开发体验
-- **ESLint** - 代码质量检查
-- **Prettier** - 代码格式化
-- **Axios** - HTTP客户端
-- **date-fns** - 日期处理工具
-
-## 项目结构
+## 📦 项目结构
 
 ```
 src/
 ├── components/          # 可复用组件
 │   ├── ui/             # 基础UI组件
 │   ├── layout/         # 布局组件
-│   ├── forms/          # 表单组件
-│   └── providers/      # Context提供者
+│   └── services/       # 服务相关组件
 ├── pages/              # 页面组件
-│   ├── auth/           # 认证相关页面
-│   ├── services/       # 服务相关页面
-│   ├── orders/         # 订单相关页面
-│   ├── messages/       # 消息相关页面
-│   ├── profile/        # 用户资料页面
-│   └── dashboard/      # 控制面板页面
-├── hooks/              # 自定义Hooks
-├── services/           # API服务
+│   ├── auth/           # 认证页面
+│   ├── dashboard/      # 仪表板页面
+│   ├── services/       # 服务页面
+│   └── profile/        # 个人资料页面
 ├── store/              # 状态管理
+├── services/           # API服务
 ├── types/              # TypeScript类型定义
+├── hooks/              # 自定义Hooks
 ├── utils/              # 工具函数
-├── constants/          # 常量定义
-└── styles/             # 全局样式
+└── assets/             # 静态资源
 ```
 
-## 快速开始
+## 🛠 开发环境设置
 
-### 环境要求
+### 前置要求
 
-- Node.js >= 18.0.0
-- npm >= 8.0.0 或 yarn >= 1.22.0
+- Node.js 18+
+- npm 或 yarn
 
 ### 安装依赖
 
@@ -72,13 +48,37 @@ src/
 npm install
 ```
 
-### 开发环境
+### 环境配置
+
+复制环境配置文件并根据需要修改：
+
+```bash
+cp .env.example .env
+```
+
+主要配置项：
+
+```env
+# API配置
+VITE_API_BASE_URL=http://localhost:8000/api
+
+# 应用配置
+VITE_APP_NAME=技能集市
+VITE_APP_VERSION=1.0.0
+
+# 功能开关
+VITE_ENABLE_SOCIAL_LOGIN=true
+VITE_ENABLE_ANALYTICS=false
+VITE_ENABLE_CHAT=true
+```
+
+### 启动开发服务器
 
 ```bash
 npm run dev
 ```
 
-应用将在 http://localhost:3000 启动
+应用将在 http://localhost:5173 启动
 
 ### 构建生产版本
 
@@ -92,146 +92,182 @@ npm run build
 npm run preview
 ```
 
-## 可用脚本
+## 🔧 开发脚本
 
 - `npm run dev` - 启动开发服务器
 - `npm run build` - 构建生产版本
 - `npm run preview` - 预览生产版本
 - `npm run lint` - 运行ESLint检查
 - `npm run lint:fix` - 自动修复ESLint问题
-- `npm run format` - 格式化代码
-- `npm run format:check` - 检查代码格式
 - `npm run type-check` - TypeScript类型检查
 - `npm run clean` - 清理构建文件
 
-## 环境变量
+## 🏗 核心功能
 
-### 开发环境 (.env.development)
+### ✅ 已实现
 
-```env
-VITE_API_BASE_URL=http://localhost:8000/api
-VITE_APP_NAME=技能集市
-VITE_DEBUG=true
-```
+- 🏠 **主页**
+  - 响应式导航栏
+  - 搜索功能
+  - 服务分类展示
+  - 精选服务列表
+  - 统计数据展示
 
-### 生产环境 (.env.production)
+- 🔍 **服务浏览**
+  - 服务列表页面
+  - 高级搜索和过滤
+  - 服务卡片组件
+  - 分类浏览
 
-```env
-VITE_API_BASE_URL=https://api.yourdomain.com/api
-VITE_APP_NAME=技能集市
-VITE_DEBUG=false
-```
+- 🎨 **UI组件库**
+  - Button组件
+  - Card组件
+  - Input组件
+  - Loading组件
+  - 响应式布局
 
-## API配置
+- 🔐 **状态管理**
+  - 用户认证状态
+  - 服务数据管理
+  - 购物车状态
+  - 全局UI状态
 
-应用通过Vite代理配置与后端API通信：
+- 🌐 **API集成**
+  - RESTful API客户端
+  - 错误处理
+  - 请求重试
+  - 文件上传
 
-- `/api/*` -> `http://localhost:8000/api/*`
-- `/admin/*` -> `http://localhost:8000/admin/*`
-- `/static/*` -> `http://localhost:8000/static/*`
-- `/media/*` -> `http://localhost:8000/media/*`
+### 🚧 开发中
 
-## 认证流程
+- 👤 **用户认证**
+  - 登录/注册页面
+  - 社交登录
+  - 密码重置
+  - 邮箱验证
 
-1. 用户登录获取access_token和refresh_token
-2. tokens存储在localStorage中
-3. 自动token刷新机制
-4. 登录状态持久化
+- 📊 **用户仪表板**
+  - 订单管理
+  - 收入统计
+  - 消息中心
+  - 个人资料
 
-## 状态管理
+- 💼 **服务管理**
+  - 服务创建
+  - 服务编辑
+  - 订单处理
+  - 评价系统
 
-### Zustand Store
+- 💬 **消息系统**
+  - 实时聊天
+  - 文件分享
+  - 消息通知
 
-- **useAuthStore** - 用户认证状态
-- **useUIStore** - UI状态（主题、侧边栏、通知等）
-- **useServiceStore** - 服务筛选状态
-- **useCartStore** - 购物车状态
+## 🎨 设计原则
 
-### React Query
+- **移动优先**: 响应式设计，完美适配各种设备
+- **用户体验**: 直观的界面和流畅的交互
+- **性能优化**: 懒加载、代码分割、缓存策略
+- **可访问性**: 遵循WCAG标准，支持键盘导航
+- **国际化**: 支持中英文切换
 
-- 服务器状态缓存
-- 自动重新获取
-- 乐观更新
-- 错误处理
+## 🔒 安全特性
 
-## 路由结构
+- JWT令牌认证
+- API请求拦截器
+- XSS防护
+- CSRF保护
+- 输入验证和清理
 
-### 公开路由
-- `/` - 首页
-- `/services` - 服务列表
-- `/services/:id` - 服务详情
-- `/auth/login` - 登录
-- `/auth/register` - 注册
+## 📱 响应式设计
 
-### 受保护路由
-- `/dashboard` - 控制面板
-- `/profile` - 个人资料
-- `/orders` - 订单管理
-- `/messages` - 消息中心
-- `/wallet` - 钱包
+- 📱 手机: 320px - 768px
+- 📟 平板: 768px - 1024px
+- 💻 桌面: 1024px+
 
-## 组件设计原则
+## 🚀 部署
 
-1. **组件优先** - 可复用的模块化组件
-2. **类型安全** - 完整的TypeScript支持
-3. **无障碍访问** - WCAG 2.1 AA标准
-4. **性能优化** - 懒加载、代码分割
-5. **响应式设计** - 移动优先
-
-## 开发规范
-
-### 代码风格
-
-- 使用Prettier进行代码格式化
-- 使用ESLint进行代码质量检查
-- 遵循React Hooks规范
-- 使用函数组件和Hooks
-
-### 提交规范
-
-- feat: 新功能
-- fix: 修复bug
-- docs: 文档更新
-- style: 代码格式调整
-- refactor: 代码重构
-- test: 测试相关
-- chore: 构建工具或辅助工具的变动
-
-## 部署
-
-### 构建部署
+### 构建生产版本
 
 ```bash
 npm run build
 ```
 
-构建文件将输出到 `dist/` 目录，可以部署到任何静态文件服务器。
+### 部署到静态托管
 
-### 环境配置
+构建后的文件位于 `dist/` 目录，可以部署到任何静态托管服务：
+
+- Vercel
+- Netlify
+- GitHub Pages
+- 阿里云OSS
+- 腾讯云COS
+
+### 环境变量
 
 确保在生产环境中设置正确的环境变量：
 
 ```bash
-VITE_API_BASE_URL=https://your-api-domain.com/api
-VITE_APP_NAME=技能集市
+# 生产环境
+VITE_API_BASE_URL=https://api.yourdomain.com
+VITE_ENABLE_ANALYTICS=true
+VITE_DEBUG_MODE=false
 ```
 
-## 贡献指南
+## 🤝 贡献指南
 
-1. Fork项目
+1. Fork 项目
 2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
 3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 创建Pull Request
+5. 开启 Pull Request
 
-## 许可证
+## 📝 开发规范
+
+### 代码风格
+
+- 使用TypeScript进行类型检查
+- 遵循ESLint规则
+- 组件使用PascalCase命名
+- 文件使用camelCase命名
+- 常量使用UPPER_SNAKE_CASE命名
+
+### Git提交规范
+
+```
+feat: 新功能
+fix: 修复bug
+docs: 文档更新
+style: 代码格式调整
+refactor: 代码重构
+test: 测试相关
+chore: 构建过程或辅助工具的变动
+```
+
+### 组件开发规范
+
+- 使用函数式组件和Hooks
+- 组件应该是单一职责的
+- 使用TypeScript定义Props类型
+- 提供默认值和必要的验证
+- 添加适当的注释
+
+## 📞 支持
+
+如有问题或建议，请通过以下方式联系：
+
+- 📧 Email: support@jinengshiji.com
+- 💬 微信: jinengshiji_support
+- 📱 电话: 400-123-4567
+
+## 📄 许可证
 
 本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
 
-## 支持
+## 🙏 致谢
 
-如有问题或建议，请：
+感谢所有为这个项目做出贡献的开发者和设计师！
 
-1. 查看[常见问题](/help)
-2. 提交[Issue](https://github.com/yourrepo/issues)
-3. 联系[技术支持](mailto:support@example.com)
+---
+
+**技能集市** - 让才华与机会相遇 🚀
