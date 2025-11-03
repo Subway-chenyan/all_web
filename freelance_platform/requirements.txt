@@ -1,0 +1,11 @@
+Django>=5.0
+djangorestframework
+django-cors-headers
+psycopg2-binary
+celery
+redis
+django-allauth
+djangorestframework-simplejwt
+django-filter
+python-decouple
+Faker

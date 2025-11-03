@@ -35,7 +35,7 @@ class CategoryAdmin(admin.ModelAdmin):
     # prepopulated_fields = {'slug': ('name',)}  # Commented out as slug field doesn't exist
 
     def gig_count(self, obj):
-        return obj.gigs.filter(is_active=True).count()
+        return obj.gigs.filter(status='active').count()
     gig_count.short_description = 'Active Gigs'
 
 
@@ -55,17 +55,14 @@ class GigAdmin(admin.ModelAdmin):
             'fields': ('freelancer', 'category', 'title', 'description')
         }),
         ('Media', {
-            'fields': ('thumbnail', 'video_url', 'gallery')
-        }),
-        ('Pricing & Delivery', {
-            'fields': ('base_price', 'delivery_days')
+            'fields': ('thumbnail', 'gallery_images')
         }),
         ('Status & Visibility', {
-            'fields': ('status', 'is_active', 'is_featured')
+            'fields': ('status', 'is_featured')
         }),
-        # ('SEO & Tags', {
-        #     'fields': ('slug', 'tags', 'meta_title', 'meta_description')
-        # }),
+        ('SEO', {
+            'fields': ('slug', 'meta_description')
+        }),
         ('Statistics', {
             'fields': ('view_count', 'order_count', 'average_rating', 'review_count'),
             'classes': ('collapse',)
@@ -75,7 +72,7 @@ class GigAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('freelancer', 'category')
 
-    actions = ['make_featured', 'remove_featured', 'activate_gigs', 'deactivate_gigs']
+    actions = ['make_featured', 'remove_featured']
 
     def make_featured(self, request, queryset):
         count = queryset.update(is_featured=True)
@@ -86,16 +83,6 @@ class GigAdmin(admin.ModelAdmin):
         count = queryset.update(is_featured=False)
         self.message_user(request, f'{count} gigs removed from featured.')
     remove_featured.short_description = 'Remove featured status from selected gigs'
-
-    def activate_gigs(self, request, queryset):
-        count = queryset.update(is_active=True)
-        self.message_user(request, f'{count} gigs activated.')
-    activate_gigs.short_description = 'Activate selected gigs'
-
-    def deactivate_gigs(self, request, queryset):
-        count = queryset.update(is_active=False)
-        self.message_user(request, f'{count} gigs deactivated.')
-    deactivate_gigs.short_description = 'Deactivate selected gigs'
 
 
 @admin.register(GigPackage)
